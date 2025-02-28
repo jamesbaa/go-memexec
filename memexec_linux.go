@@ -10,8 +10,8 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-func open(b []byte) (*os.File, error) {
-	fd, err := unix.MemfdCreate("", unix.MFD_CLOEXEC)
+func open(b []byte, prefix string) (*os.File, error) {
+	fd, err := unix.MemfdCreate(prefix, unix.MFD_CLOEXEC)
 	if err != nil {
 		return nil, err
 	}

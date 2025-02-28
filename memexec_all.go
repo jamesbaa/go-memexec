@@ -4,14 +4,15 @@
 package memexec
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 )
 
-func open(b []byte) (*os.File, error) {
-	pattern := "go-memexec-"
+func open(b []byte, prefix string) (*os.File, error) {
+	pattern := fmt.Sprintf("%s-", prefix)
 	if runtime.GOOS == "windows" {
-		pattern = "go-memexec-*.exe"
+		pattern = fmt.Sprintf("%s-*.exe", prefix)
 	}
 	f, err := os.CreateTemp("", pattern)
 	if err != nil {
