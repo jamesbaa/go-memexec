@@ -23,7 +23,7 @@ func open(b []byte, prefix string, tmpPath string) (*os.File, error) {
 			_ = clean(f)
 		}
 	}()
-	if err = os.Chmod(f.Name(), 0o500); err != nil {
+	if err = os.Chmod(f.Name(), 0o700); err != nil {
 		return nil, err
 	}
 	if _, err = f.Write(b); err != nil {
