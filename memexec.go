@@ -10,9 +10,10 @@ type Option func(e *Exec)
 
 // Exec is an in-memory executable code unit.
 type Exec struct {
-	f     *os.File
-	opts  []func(cmd *exec.Cmd)
-	clean func() error
+	f       *os.File
+	opts    []func(cmd *exec.Cmd)
+	clean   func() error
+	tmpPath string
 }
 
 // WithPrepare configures cmd with default values such as Env, Dir, etc.
@@ -29,17 +30,25 @@ func WithCleanup(fn func() error) Option {
 	}
 }
 
+// WithTempPath configures the temp directory the binary is written to
+func WithTempPath(tmpPath string) Option {
+	return func(e *Exec) {
+		e.tmpPath = tmpPath
+	}
+}
+
 // New creates new memory execution object that can be
 // used for executing commands on a memory based binary.
 func New(b []byte, prefix string, opts ...Option) (*Exec, error) {
-	f, err := open(b, prefix)
-	if err != nil {
-		return nil, err
-	}
-	e := &Exec{f: f}
+	e := &Exec{}
 	for _, opt := range opts {
 		opt(e)
 	}
+	f, err := open(b, prefix, e.tmpPath)
+	if err != nil {
+		return nil, err
+	}
+	e.f = f
 	return e, nil
 }
 

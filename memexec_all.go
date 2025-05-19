@@ -9,12 +9,12 @@ import (
 	"runtime"
 )
 
-func open(b []byte, prefix string) (*os.File, error) {
+func open(b []byte, prefix string, tmpPath string) (*os.File, error) {
 	pattern := fmt.Sprintf("%s-", prefix)
 	if runtime.GOOS == "windows" {
 		pattern = fmt.Sprintf("%s-*.exe", prefix)
 	}
-	f, err := os.CreateTemp("", pattern)
+	f, err := os.CreateTemp(tmpPath, pattern)
 	if err != nil {
 		return nil, err
 	}
